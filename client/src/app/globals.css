@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+  
+  /* Clean Walmart-inspired color scheme */
+  --background: 255 255 255;
+  --foreground: 31 41 55;
+  --card: 255 255 255;
+  --card-foreground: 31 41 55;
+  --popover: 255 255 255;
+  --popover-foreground: 31 41 55;
+  --primary: 37 99 235;
+  --primary-foreground: 255 255 255;
+  --secondary: 249 250 251;
+  --secondary-foreground: 75 85 99;
+  --muted: 249 250 251;
+  --muted-foreground: 107 114 128;
+  --accent: 248 250 252;
+  --accent-foreground: 31 41 55;
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  --border: 229 231 235;
+  --input: 243 244 246;
+  --ring: 37 99 235;
+  
+  /* Clean chart colors */
+  --chart-1: 37 99 235;
+  --chart-2: 34 197 94;
+  --chart-3: 251 146 60;
+  --chart-4: 168 85 247;
+  --chart-5: 236 72 153;
+  
+  /* Sidebar */
+  --sidebar: 255 255 255;
+  --sidebar-foreground: 31 41 55;
+  --sidebar-primary: 37 99 235;
+  --sidebar-primary-foreground: 255 255 255;
+  --sidebar-accent: 248 250 252;
+  --sidebar-accent-foreground: 31 41 55;
+  --sidebar-border: 229 231 235;
+  --sidebar-ring: 37 99 235;
+}
+
+.dark {
+  --background: 31 41 55;
+  --foreground: 249 250 251;
+  --card: 55 65 81;
+  --card-foreground: 249 250 251;
+  --popover: 55 65 81;
+  --popover-foreground: 249 250 251;
+  --primary: 59 130 246;
+  --primary-foreground: 31 41 55;
+  --secondary: 75 85 99;
+  --secondary-foreground: 229 231 235;
+  --muted: 75 85 99;
+  --muted-foreground: 156 163 175;
+  --accent: 75 85 99;
+  --accent-foreground: 229 231 235;
+  --destructive: 239 68 68;
+  --destructive-foreground: 249 250 251;
+  --border: 107 114 128;
+  --input: 75 85 99;
+  --ring: 59 130 246;
+  
+  /* Chart colors for dark mode */
+  --chart-1: 59 130 246;
+  --chart-2: 34 197 94;
+  --chart-3: 251 146 60;
+  --chart-4: 168 85 247;
+  --chart-5: 236 72 153;
+  
+  /* Sidebar dark */
+  --sidebar: 55 65 81;
+  --sidebar-foreground: 249 250 251;
+  --sidebar-primary: 59 130 246;
+  --sidebar-primary-foreground: 31 41 55;
+  --sidebar-accent: 75 85 99;
+  --sidebar-accent-foreground: 229 231 235;
+  --sidebar-border: 107 114 128;
+  --sidebar-ring: 59 130 246;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Clean card styles */
+  .clean-card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+  }
+  
+  .clean-card-dark {
+    @apply dark:bg-gray-800 dark:border-gray-700;
+  }
+  
+  /* Clean button styles */
+  .clean-btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+  
+  .clean-btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+  
+  /* Clean input styles */
+  .clean-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  /* Navigation styles */
+  .nav-item {
+    @apply flex items-center gap-3 p-3 rounded-lg transition-colors border-b border-gray-100 hover:bg-gray-50 w-full text-sm font-medium;
+  }
+  
+  .nav-item-active {
+    @apply bg-blue-50 text-blue-700 border-blue-200;
+  }
+  
+  .nav-item-inactive {
+    @apply text-gray-700 hover:text-gray-900;
+  }
+}
