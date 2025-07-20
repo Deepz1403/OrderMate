@@ -92,9 +92,13 @@ export function Sidebar() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <ShoppingCart className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+              <img 
+                src="/OrderMate Logo.png" 
+                alt="OrderMate Logo" 
+                className="h-10 w-10 object-contain"
+              />
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">OrderMate</h2>
