@@ -143,37 +143,7 @@ const StatsCard = ({ title, value, subtitle, icon, color }: {
   </div>
 );
 
-const CategoryStatsGrid = ({ errors }: { errors: ErrorDetails[] }) => {
-  const categories = ['database', 'payment', 'storage', 'api', 'email', 'server', 'network', 'auth'] as const;
-  
-  const categoryStats = categories.map(category => {
-    const categoryErrors = errors.filter(e => e.category === category);
-    const activeErrors = categoryErrors.filter(e => e.status === 'active');
-    return {
-      category,
-      total: categoryErrors.length,
-      active: activeErrors.length,
-      icon: getCategoryIcon(category)
-    };
-  }).filter(stat => stat.total > 0);
-
-  if (categoryStats.length === 0) return null;
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-      {categoryStats.map(stat => (
-        <StatsCard
-          key={stat.category}
-          title={`${stat.category.charAt(0).toUpperCase() + stat.category.slice(1)} Errors`}
-          value={stat.total}
-          subtitle={`${stat.active} active errors`}
-          icon={stat.icon}
-          color="bg-blue-50"
-        />
-      ))}
-    </div>
-  );
-};
+// CategoryStatsGrid component removed as per user request
 
 const ErrorCard = ({ error, onViewDetails }: { error: ErrorDetails; onViewDetails: (error: ErrorDetails) => void }) => {
   return (
@@ -677,8 +647,7 @@ export default function ErrorsPage() {
         />
       </div>
 
-      {/* Category Stats */}
-      <CategoryStatsGrid errors={errors} />
+
 
       {/* Filters */}
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
