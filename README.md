@@ -35,14 +35,6 @@ npm install
 
 The environment variables are already configured in `.env.local`:
 
-```env
-MONGODB_URI=mongodb+srv://kumarshresth2004:Shresth%40123@cluster0.lly1dz4.mongodb.net/
-DATABASE_NAME=store_db
-NEXTAUTH_SECRET=your-nextauth-secret-here
-NEXTAUTH_URL=http://localhost:3000
-API_BASE_URL=http://localhost:3000/api
-```
-
 ### 3. Database Setup
 
 Seed the database with sample data:
