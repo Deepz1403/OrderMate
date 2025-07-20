@@ -461,86 +461,31 @@ export default function CustomersPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const customersPerPage = 10;
 
-    // Mock data - replace with API call
-    const mockCustomers: CustomerDetails[] = [
-        {
-            _id: "507f1f77bcf86cd799439011",
-            name: "John Doe",
-            email: "john@example.com",
-            phone: "+1 (555) 123-4567",
-            orders: 12,
-            totalSpent: 1543.98,
-            lastOrder: "2024-01-15",
-            status: "active",
-            location: "New York, NY",
-            joinDate: "2023-06-15",
-        },
-        {
-            _id: "507f1f77bcf86cd799439012",
-            name: "Jane Smith",
-            email: "jane@example.com",
-            phone: "+1 (555) 234-5678",
-            orders: 8,
-            totalSpent: 892.45,
-            lastOrder: "2024-01-14",
-            status: "active",
-            location: "Los Angeles, CA",
-            joinDate: "2023-08-22",
-        },
-        {
-            _id: "507f1f77bcf86cd799439013",
-            name: "Mike Johnson",
-            email: "mike@example.com",
-            phone: "+1 (555) 345-6789",
-            orders: 15,
-            totalSpent: 2156.32,
-            lastOrder: "2024-01-13",
-            status: "vip",
-            location: "Chicago, IL",
-            joinDate: "2023-04-10",
-        },
-        {
-            _id: "507f1f77bcf86cd799439014",
-            name: "Sarah Wilson",
-            email: "sarah@example.com",
-            phone: "+1 (555) 456-7890",
-            orders: 3,
-            totalSpent: 267.89,
-            lastOrder: "2024-01-12",
-            status: "inactive",
-            location: "Houston, TX",
-            joinDate: "2023-11-05",
-        },
-        {
-            _id: "507f1f77bcf86cd799439015",
-            name: "David Brown",
-            email: "david@example.com",
-            phone: "+1 (555) 567-8901",
-            orders: 21,
-            totalSpent: 3847.56,
-            lastOrder: "2024-01-11",
-            status: "vip",
-            location: "Phoenix, AZ",
-            joinDate: "2023-02-18",
-        },
-    ];
-
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                setCustomers(mockCustomers);
-                setFilteredCustomers(mockCustomers);
-            } catch (error) {
-                console.error('Error fetching customers:', error);
+    // Fetch customers from API
+    const fetchCustomers = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/customers');
+            const data = await response.json();
+            
+            if (data.success) {
+                setCustomers(data.customers);
+                setFilteredCustomers(data.customers);
+            } else {
+                console.error('Failed to fetch customers:', data.error);
                 setCustomers([]);
                 setFilteredCustomers([]);
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching customers:', error);
+            setCustomers([]);
+            setFilteredCustomers([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchCustomers();
     }, []);
 
@@ -568,16 +513,33 @@ export default function CustomersPage() {
 
     const handleStatusChange = useCallback(async (customerId: string, newStatus: string) => {
         try {
-            // Replace with actual API call
-            console.log(`Updating customer ${customerId} status to ${newStatus}`);
-            
+            // Update local state immediately for better UX
             setCustomers(prevCustomers =>
                 prevCustomers.map(customer =>
                     customer._id === customerId ? { ...customer, status: newStatus } : customer
                 )
             );
+
+            // Make API call to update status
+            const response = await fetch(`/api/customers/${customerId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            const data = await response.json();
+            
+            if (!data.success) {
+                console.error('Failed to update customer status:', data.error);
+                // Revert on failure
+                fetchCustomers();
+            }
         } catch (error) {
             console.error('Error updating customer status:', error);
+            // Revert on failure
+            fetchCustomers();
         }
     }, []);
 
@@ -587,20 +549,10 @@ export default function CustomersPage() {
     }, []);
 
     const handleRefresh = useCallback(async () => {
-        setLoading(true);
-        try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setCustomers(mockCustomers);
-            setFilteredCustomers(mockCustomers);
-        } catch (error) {
-            console.error('Error refreshing customers:', error);
-        } finally {
-            setLoading(false);
-        }
+        await fetchCustomers();
     }, []);
 
-    // Pagination logic
+    // Pagination calculations
     const indexOfLastCustomer = currentPage * customersPerPage;
     const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
     const currentCustomers = filteredCustomers.slice(indexOfFirstCustomer, indexOfLastCustomer);
@@ -611,18 +563,15 @@ export default function CustomersPage() {
         const active = customers.filter(customer => customer.status === 'active').length;
         const vip = customers.filter(customer => customer.status === 'vip').length;
         const totalRevenue = customers.reduce((acc, customer) => acc + customer.totalSpent, 0);
-
         return { total, active, vip, totalRevenue };
     }, [customers]);
 
     if (loading) {
         return (
-            <div className="space-y-6">
-                <div className="flex items-center justify-center h-64">
-                    <div className="flex items-center gap-2">
-                        <RefreshCw className="h-5 w-5 animate-spin text-blue-600" />
-                        <span className="text-gray-600">Loading customers...</span>
-                    </div>
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="flex items-center gap-2">
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    <span className="text-gray-600">Loading customers...</span>
                 </div>
             </div>
         );
@@ -641,67 +590,64 @@ export default function CustomersPage() {
                         icon={<UserPlus className="w-4 h-4" />}
                         label="Add Customer"
                         onClick={() => console.log('Add customer')}
-                        variant="secondary"
+                        variant="primary"
                     />
                     <ActionButton
                         icon={<RefreshCw className="w-4 h-4" />}
                         label="Refresh"
                         onClick={handleRefresh}
-                        variant="primary"
                     />
                 </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatsCard
                     title="Total Customers"
                     value={customerStats.total}
                     subtitle="All registered customers"
                     icon={<Users className="w-6 h-6 text-blue-600" />}
-                    color="bg-blue-50"
+                    color="bg-blue-100"
                 />
                 <StatsCard
                     title="Active Customers"
                     value={customerStats.active}
                     subtitle="Currently active"
-                    icon={<Users className="w-6 h-6 text-green-600" />}
-                    color="bg-green-50"
+                    icon={<TrendingUp className="w-6 h-6 text-green-600" />}
+                    color="bg-green-100"
                 />
                 <StatsCard
                     title="VIP Customers"
                     value={customerStats.vip}
                     subtitle="Premium customers"
                     icon={<Users className="w-6 h-6 text-purple-600" />}
-                    color="bg-purple-50"
+                    color="bg-purple-100"
                 />
                 <StatsCard
                     title="Total Revenue"
                     value={formatCurrency(customerStats.totalRevenue)}
                     subtitle="From all customers"
-                    icon={<TrendingUp className="w-6 h-6 text-green-600" />}
-                    color="bg-green-50"
+                    icon={<TrendingUp className="w-6 h-6 text-orange-600" />}
+                    color="bg-orange-100"
                 />
             </div>
 
             {/* Filters */}
-            <Card className="bg-white border border-gray-200">
-                <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2">
-                        <Filter className="w-5 h-5" />
-                        Customer Filters
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="border border-gray-200">
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Filter className="w-4 h-4 text-gray-500" />
+                        <span className="font-medium text-gray-700">Customer Filters</span>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                             <Input
                                 type="text"
                                 placeholder="Search customers..."
-                                className="pl-10"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10"
                             />
                         </div>
                         <select
@@ -720,15 +666,6 @@ export default function CustomersPage() {
                             value={locationFilter}
                             onChange={(e) => setLocationFilter(e.target.value)}
                         />
-                        <ActionButton
-                            icon={<X className="w-4 h-4" />}
-                            label="Clear Filters"
-                            onClick={() => {
-                                setSearchTerm('');
-                                setStatusFilter('all');
-                                setLocationFilter('');
-                            }}
-                        />
                     </div>
                 </CardContent>
             </Card>
@@ -746,9 +683,9 @@ export default function CustomersPage() {
                         />
                     ))
                 ) : (
-                    <Card className="bg-white border border-gray-200">
-                        <CardContent className="text-center py-12">
-                            <Users className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <Card className="border border-gray-200">
+                        <CardContent className="py-12 text-center">
+                            <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                             <h3 className="text-lg font-medium text-gray-900 mb-2">No customers found</h3>
                             <p className="text-gray-600">No customers match your current filters.</p>
                         </CardContent>
@@ -758,34 +695,25 @@ export default function CustomersPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-6 py-3">
+                <div className="flex items-center justify-between">
                     <div className="text-sm text-gray-700">
                         Showing {indexOfFirstCustomer + 1} to {Math.min(indexOfLastCustomer, filteredCustomers.length)} of {filteredCustomers.length} customers
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                         >
                             Previous
                         </button>
-                        {[...Array(totalPages)].map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={`px-3 py-1 text-sm rounded-md ${currentPage === i + 1
-                                    ? 'bg-blue-600 text-white'
-                                    : 'border border-gray-300 hover:bg-gray-50'
-                                    }`}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
+                        <span className="text-sm text-gray-700">
+                            Page {currentPage} of {totalPages}
+                        </span>
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+                            className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                         >
                             Next
                         </button>
