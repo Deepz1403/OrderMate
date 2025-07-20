@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Create OrderMate Favicon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .favicon-preview {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .instructions {
+            background: #f8fafc;
+            padding: 20px;
+            border-left: 4px solid #3b82f6;
+            margin: 20px 0;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e5f3ff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OrderMate Favicon Generator</h1>
+        
+        <div class="favicon-preview">OM</div>
+        
+        <div class="instructions">
+            <h3>Instructions to Create Your OrderMate Favicon:</h3>
+            
+            <div class="step">
+                <strong>Option 1 - Quick Solution:</strong>
+                <p>Use an online favicon generator like <a href="https://favicon.io/" target="_blank">favicon.io</a></p>
+                <ol>
+                    <li>Upload your OrderMate Logo.png</li>
+                    <li>Download the generated favicon package</li>
+                    <li>Replace the files in your public directory</li>
+                </ol>
+            </div>
+            
+            <div class="step">
+                <strong>Option 2 - Manual Creation:</strong>
+                <p>Create a simple text-based favicon:</p>
+                <ol>
+                    <li>Open any image editor (Photoshop, GIMP, Canva)</li>
+                    <li>Create a 32x32 pixel image</li>
+                    <li>Use blue background (#3b82f6) with white "OM" text</li>
+                    <li>Save as favicon.ico</li>
+                </ol>
+            </div>
+        </div>
+        
+        <h3>Files you need to create/replace:</h3>
+        <ul>
+            <li><code>public/favicon.ico</code> - Main favicon (16x16, 32x32)</li>
+            <li><code>public/apple-touch-icon.png</code> - Apple devices (180x180)</li>
+            <li><code>public/icon-192.png</code> - Android (192x192)</li>
+            <li><code>public/icon-512.png</code> - Large icon (512x512)</li>
+        </ul>
+    </div>
+</body>
+</html>
