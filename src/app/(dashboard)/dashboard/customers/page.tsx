@@ -561,9 +561,10 @@ export default function CustomersPage() {
     const customerStats = useMemo(() => {
         const total = customers.length;
         const active = customers.filter(customer => customer.status === 'active').length;
+        const inactive = customers.filter(customer => customer.status === 'inactive').length;
         const vip = customers.filter(customer => customer.status === 'vip').length;
         const totalRevenue = customers.reduce((acc, customer) => acc + customer.totalSpent, 0);
-        return { total, active, vip, totalRevenue };
+        return { total, active, inactive, vip, totalRevenue };
     }, [customers]);
 
     if (loading) {
@@ -601,7 +602,7 @@ export default function CustomersPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <StatsCard
                     title="Total Customers"
                     value={customerStats.total}
@@ -613,8 +614,15 @@ export default function CustomersPage() {
                     title="Active Customers"
                     value={customerStats.active}
                     subtitle="Currently active"
-                    icon={<TrendingUp className="w-6 h-6 text-green-600" />}
+                    icon={<Users className="w-6 h-6 text-green-600" />}
                     color="bg-green-100"
+                />
+                <StatsCard
+                    title="Inactive Customers"
+                    value={customerStats.inactive}
+                    subtitle="Currently inactive"
+                    icon={<Users className="w-6 h-6 text-red-600" />}
+                    color="bg-red-100"
                 />
                 <StatsCard
                     title="VIP Customers"
@@ -627,8 +635,8 @@ export default function CustomersPage() {
                     title="Total Revenue"
                     value={formatCurrency(customerStats.totalRevenue)}
                     subtitle="From all customers"
-                    icon={<TrendingUp className="w-6 h-6 text-orange-600" />}
-                    color="bg-orange-100"
+                    icon={<TrendingUp className="w-6 h-6 text-green-600" />}
+                    color="bg-green-100"
                 />
             </div>
 

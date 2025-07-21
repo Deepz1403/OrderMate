@@ -63,7 +63,7 @@ const OrderSchema = new Schema<IOrder>({
     trim: true
   }
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 OrderSchema.index({ orderLink: 1 });

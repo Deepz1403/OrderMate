@@ -132,9 +132,7 @@ export default function InventoryPage() {
       const response = await fetch('/api/products');
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Response error:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        throw new Error(`Failed to fetch products: ${response.status}`);
       }
       
       const data = await response.json();
@@ -143,7 +141,6 @@ export default function InventoryPage() {
         const products = data.products || [];
         setProducts(products);
       } else {
-        console.error('API returned success: false', data);
         setError(data.error || 'Failed to fetch products');
       }
     } catch (error) {
@@ -427,7 +424,7 @@ export default function InventoryPage() {
                         <div className="text-sm font-medium text-gray-900">{product.quantity}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{product.category}</div>
+                        <div className="text-sm text-gray-900 capitalize">{product.category}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">${product.price.toFixed(2)}</div>
@@ -548,7 +545,7 @@ function ProductFormModal({ isOpen, onClose, onSave, product, categories }: Prod
     category: '',
     quantity: 0,
     price: 0,
-    stock_alert_level: 5,
+    stock_alert_level: 0,
     description: '',
     warehouse_location: '',
     sku: ''
@@ -574,7 +571,7 @@ function ProductFormModal({ isOpen, onClose, onSave, product, categories }: Prod
         category: '',
         quantity: 0,
         price: 0,
-        stock_alert_level: 5,
+        stock_alert_level: 0,
         description: '',
         warehouse_location: '',
         sku: ''
@@ -672,10 +669,14 @@ function ProductFormModal({ isOpen, onClose, onSave, product, categories }: Prod
                 Quantity *
               </label>
               <input
-                type="number"
-                min="0"
-                value={formData.quantity}
-                onChange={(e) => handleInputChange('quantity', parseInt(e.target.value) || 0)}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.quantity === 0 ? '' : formData.quantity.toString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  handleInputChange('quantity', value === '' ? 0 : parseInt(value));
+                }}
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   errors.quantity ? 'border-red-500' : 'border-gray-300'
                 }`}
@@ -689,11 +690,17 @@ function ProductFormModal({ isOpen, onClose, onSave, product, categories }: Prod
                 Price *
               </label>
               <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
+                type="text"
+                inputMode="decimal"
+                pattern="[0-9]*\.?[0-9]*"
+                value={formData.price === 0 ? '' : formData.price.toString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9.]/g, '');
+                  // Ensure only one decimal point
+                  const parts = value.split('.');
+                  const cleanValue = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : value;
+                  handleInputChange('price', cleanValue === '' ? 0 : parseFloat(cleanValue));
+                }}
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   errors.price ? 'border-red-500' : 'border-gray-300'
                 }`}
@@ -707,14 +714,18 @@ function ProductFormModal({ isOpen, onClose, onSave, product, categories }: Prod
                 Stock Alert Level *
               </label>
               <input
-                type="number"
-                min="0"
-                value={formData.stock_alert_level}
-                onChange={(e) => handleInputChange('stock_alert_level', parseInt(e.target.value) || 0)}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.stock_alert_level === 0 ? '' : formData.stock_alert_level.toString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '');
+                  handleInputChange('stock_alert_level', value === '' ? 0 : parseInt(value));
+                }}
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   errors.stock_alert_level ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="5"
+                placeholder="0"
               />
               {errors.stock_alert_level && <p className="text-red-500 text-xs mt-1">{errors.stock_alert_level}</p>}
             </div>

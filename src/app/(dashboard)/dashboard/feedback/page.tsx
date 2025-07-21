@@ -207,7 +207,7 @@ export default function FeedbackPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatsCard
           title="Average Rating"
           value={feedbackStats.average_rating.toFixed(1)}
@@ -228,6 +228,13 @@ export default function FeedbackPage() {
           subtitle="Awaiting response"
           icon={<Clock className="w-6 h-6 text-yellow-600" />}
           color="bg-yellow-50"
+        />
+        <StatsCard
+          title="In Review"
+          value={feedbackStats.in_review}
+          subtitle="Being processed"
+          icon={<Eye className="w-6 h-6 text-blue-600" />}
+          color="bg-blue-50"
         />
         <StatsCard
           title="Resolved"
@@ -355,10 +362,10 @@ export default function FeedbackPage() {
                         <span className="ml-2 text-sm text-gray-600">({item.rating})</span>
                       </div>
                       <div className="flex space-x-2">
-                        <Badge className={getStatusColor(item.status)}>
+                        <Badge className={`${getStatusColor(item.status)} capitalize`}>
                           {item.status.replace('_', ' ')}
                         </Badge>
-                        <Badge className={getCategoryColor(item.category)}>
+                        <Badge className={`${getCategoryColor(item.category)} capitalize`}>
                           {item.category}
                         </Badge>
                       </div>

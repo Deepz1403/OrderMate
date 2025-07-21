@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
-import { AlertTriangle, AlertCircle, CheckCircle, Clock, Bug, Activity, Search, RefreshCw, Eye, Calendar, User, Globe, Code, Hash, Users, Database, CreditCard, HardDrive, Wifi, Mail, Server, Shield } from 'lucide-react';
+import { AlertTriangle, AlertCircle, CheckCircle, Clock, Bug, Activity, Search, RefreshCw, Eye, Calendar, User, Globe, Code, Hash, Users, Database, CreditCard, HardDrive, Wifi, Mail, Server, Shield, X } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
@@ -466,87 +466,26 @@ export default function ErrorsPage() {
   const [selectedError, setSelectedError] = useState<ErrorDetails | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Sample data for development
-  const sampleErrors: ErrorDetails[] = [
-    {
-      _id: "67123abc456def789012",
-      error_id: "ERR-2024-001",
-      title: "Database Connection Timeout",
-      description: "MongoDB connection timeout occurred during user authentication process",
-      severity: "high",
-      status: "active",
-      category: "database",
-      frequency: 127,
-      affected_users: 45,
-      stack_trace: "MongoTimeoutError: Server selection timed out after 30000 ms\n    at Timeout.<anonymous> (/app/node_modules/mongodb/lib/core/sdam/topology.js:438:30)",
-      user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      ip_address: "192.168.1.100",
-      created_at: "2024-01-15T08:30:00Z",
-      updated_at: "2024-01-20T14:22:00Z"
-    },
-    {
-      _id: "67123abc456def789013",
-      error_id: "ERR-2024-002",
-      title: "Payment Gateway API Failure",
-      description: "Stripe payment processing failed with invalid card number error",
-      severity: "critical",
-      status: "investigating",
-      category: "payment",
-      frequency: 89,
-      affected_users: 67,
-      resolved_at: "2024-01-19T10:15:00Z",
-      resolved_by: "John Smith",
-      created_at: "2024-01-18T16:45:00Z",
-      updated_at: "2024-01-19T10:15:00Z"
-    },
-    {
-      _id: "67123abc456def789014",
-      error_id: "ERR-2024-003",
-      title: "File Upload Service Unavailable",
-      description: "AWS S3 bucket access denied during image upload process",
-      severity: "medium",
-      status: "resolved",
-      category: "storage",
-      frequency: 34,
-      affected_users: 12,
-      ip_address: "203.45.67.89",
-      created_at: "2024-01-17T12:00:00Z",
-      updated_at: "2024-01-18T09:30:00Z"
-    },
-    {
-      _id: "67123abc456def789015",
-      error_id: "ERR-2024-004",
-      title: "API Rate Limit Exceeded",
-      description: "External API rate limit reached causing service degradation",
-      severity: "low",
-      status: "monitoring",
-      category: "api",
-      frequency: 156,
-      affected_users: 23,
-      created_at: "2024-01-16T14:20:00Z",
-      updated_at: "2024-01-20T11:10:00Z"
-    },
-    {
-      _id: "67123abc456def789016",
-      error_id: "ERR-2024-005",
-      title: "Email Service Authentication Failed",
-      description: "SMTP authentication failed when sending notification emails",
-      severity: "medium",
-      status: "active",
-      category: "email",
-      frequency: 78,
-      affected_users: 34,
-      created_at: "2024-01-19T09:15:00Z",
-      updated_at: "2024-01-20T13:45:00Z"
-    }
-  ];
-
   const fetchErrors = async () => {
     try {
       setLoading(true);
-      // For development, use sample data
-      setErrors(sampleErrors);
-      setFilteredErrors(sampleErrors);
+      
+      const response = await fetch('/api/errors');
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch errors: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setErrors(data.errors || []);
+        setFilteredErrors(data.errors || []);
+      } else {
+        console.error('Failed to fetch errors:', data.error);
+        setErrors([]);
+        setFilteredErrors([]);
+      }
     } catch (error) {
       console.error('Error fetching errors:', error);
       setErrors([]);
@@ -591,6 +530,12 @@ export default function ErrorsPage() {
   const totalErrors = errors.length;
   const activeErrors = errors.filter(e => e.status === 'active').length;
   const resolvedErrors = errors.filter(e => e.status === 'resolved').length;
+  const monitoringErrors = errors.filter(e => e.status === 'monitoring').length;
+  const investigatingErrors = errors.filter(e => e.status === 'investigating').length;
+  const criticalErrors = errors.filter(e => e.severity === 'critical').length;
+  const highErrors = errors.filter(e => e.severity === 'high').length;
+  const mediumErrors = errors.filter(e => e.severity === 'medium').length;
+  const lowErrors = errors.filter(e => e.severity === 'low').length;
   const totalAffectedUsers = errors.reduce((sum, error) => sum + error.affected_users, 0);
 
   if (loading) {
@@ -616,7 +561,7 @@ export default function ErrorsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         <StatsCard
           title="Total Errors"
           value={totalErrors}
@@ -628,22 +573,68 @@ export default function ErrorsPage() {
           title="Active Issues"
           value={activeErrors}
           subtitle="Requiring attention"
-          icon={<AlertTriangle className="h-6 w-6 text-blue-600" />}
+          icon={<AlertTriangle className="h-6 w-6 text-red-600" />}
+          color="bg-red-50"
+        />
+        <StatsCard
+          title="Investigating"
+          value={investigatingErrors}
+          subtitle="Under investigation"
+          icon={<Search className="h-6 w-6 text-blue-600" />}
           color="bg-blue-50"
+        />
+        <StatsCard
+          title="Monitoring"
+          value={monitoringErrors}
+          subtitle="Being monitored"
+          icon={<Eye className="h-6 w-6 text-yellow-600" />}
+          color="bg-yellow-50"
         />
         <StatsCard
           title="Resolved"
           value={resolvedErrors}
           subtitle="Successfully fixed"
-          icon={<CheckCircle className="h-6 w-6 text-blue-600" />}
+          icon={<CheckCircle className="h-6 w-6 text-green-600" />}
+          color="bg-green-50"
+        />
+      </div>
+
+      {/* Severity Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <StatsCard
+          title="Critical"
+          value={criticalErrors}
+          subtitle="Immediate action needed"
+          icon={<AlertTriangle className="h-6 w-6 text-red-600" />}
+          color="bg-red-50"
+        />
+        <StatsCard
+          title="High"
+          value={highErrors}
+          subtitle="High priority issues"
+          icon={<AlertCircle className="h-6 w-6 text-orange-600" />}
+          color="bg-orange-50"
+        />
+        <StatsCard
+          title="Medium"
+          value={mediumErrors}
+          subtitle="Medium priority issues"
+          icon={<Clock className="h-6 w-6 text-yellow-600" />}
+          color="bg-yellow-50"
+        />
+        <StatsCard
+          title="Low"
+          value={lowErrors}
+          subtitle="Low priority issues"
+          icon={<Activity className="h-6 w-6 text-blue-600" />}
           color="bg-blue-50"
         />
         <StatsCard
           title="Affected Users"
           value={totalAffectedUsers}
           subtitle="Total impact"
-          icon={<Users className="h-6 w-6 text-blue-600" />}
-          color="bg-blue-50"
+          icon={<Users className="h-6 w-6 text-purple-600" />}
+          color="bg-purple-50"
         />
       </div>
 

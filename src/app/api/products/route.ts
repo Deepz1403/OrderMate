@@ -1,41 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Product from '@/models/Product';
-import mongoose from 'mongoose';
 
 export async function GET() {
   try {
-    console.log('API: Starting product fetch...');
-    console.log('API: Database URI:', process.env.MONGODB_URI?.substring(0, 50) + '...');
-    console.log('API: Database Name:', process.env.DATABASE_NAME);
-    
     await connectToDatabase();
-    console.log('API: Database connected successfully');
-    console.log('API: Connected to database:', mongoose.connection.name);
     
-    // Try to find products in inventory collection
-    console.log('API: Querying inventory collection...');
-    const products = await Product.find({}).sort({ createdAt: -1 });
-    console.log('API: Raw products found:', products);
-    console.log('API: Products count:', products.length);
-    
-    // If no products found, try without sorting
-    if (products.length === 0) {
-      console.log('API: Trying query without sorting...');
-      const productsNoSort = await Product.find({});
-      console.log('API: Products without sort:', productsNoSort);
-      console.log('API: Count without sort:', productsNoSort.length);
-    }
-    
-    // Also try to count documents directly
-    const count = await Product.countDocuments();
-    console.log('API: Total document count in inventory:', count);
+    const products = await Product.find({}).sort({ created_at: -1 });
     
     return NextResponse.json({ 
       success: true, 
       products: products,
-      totalCount: count,
-      databaseName: mongoose.connection.name
+      totalCount: products.length
     });
   } catch (error) {
     console.error('API Error fetching products:', error);
@@ -59,8 +35,8 @@ export async function POST(request: NextRequest) {
           name: "Wireless Headphones",
           sku: "WH-001",
           category: "Electronics",
-          stock: 45,
-          lowStockThreshold: 10,
+          quantity: 45,
+          stock_alert_level: 10,
           price: 129.99,
           description: "Premium wireless headphones with noise cancellation"
         },
@@ -68,8 +44,8 @@ export async function POST(request: NextRequest) {
           name: "Smart Watch",
           sku: "SW-002",
           category: "Electronics",
-          stock: 5,
-          lowStockThreshold: 10,
+          quantity: 5,
+          stock_alert_level: 10,
           price: 299.99,
           description: "Advanced fitness tracking smartwatch"
         },
@@ -77,8 +53,8 @@ export async function POST(request: NextRequest) {
           name: "Laptop Stand",
           sku: "LS-003",
           category: "Accessories",
-          stock: 23,
-          lowStockThreshold: 5,
+          quantity: 23,
+          stock_alert_level: 5,
           price: 49.99,
           description: "Adjustable aluminum laptop stand"
         },
@@ -86,8 +62,8 @@ export async function POST(request: NextRequest) {
           name: "USB-C Cable",
           sku: "UC-004",
           category: "Cables",
-          stock: 0,
-          lowStockThreshold: 15,
+          quantity: 0,
+          stock_alert_level: 15,
           price: 19.99,
           description: "High-speed USB-C charging cable"
         },
@@ -95,8 +71,8 @@ export async function POST(request: NextRequest) {
           name: "Bluetooth Speaker",
           sku: "BS-005",
           category: "Audio",
-          stock: 18,
-          lowStockThreshold: 8,
+          quantity: 18,
+          stock_alert_level: 8,
           price: 79.99,
           description: "Portable waterproof Bluetooth speaker"
         },
@@ -104,8 +80,8 @@ export async function POST(request: NextRequest) {
           name: "Gaming Mouse",
           sku: "GM-006",
           category: "Electronics",
-          stock: 32,
-          lowStockThreshold: 12,
+          quantity: 32,
+          stock_alert_level: 12,
           price: 89.99,
           description: "High-precision gaming mouse with RGB lighting"
         },
@@ -113,8 +89,8 @@ export async function POST(request: NextRequest) {
           name: "Phone Case",
           sku: "PC-007",
           category: "Accessories",
-          stock: 8,
-          lowStockThreshold: 15,
+          quantity: 8,
+          stock_alert_level: 15,
           price: 24.99,
           description: "Protective phone case with drop protection"
         },
@@ -122,8 +98,8 @@ export async function POST(request: NextRequest) {
           name: "Wireless Charger",
           sku: "WC-008",
           category: "Electronics",
-          stock: 0,
-          lowStockThreshold: 10,
+          quantity: 0,
+          stock_alert_level: 10,
           price: 39.99,
           description: "Fast wireless charging pad"
         }

@@ -172,10 +172,10 @@ export default function ChatbotPage() {
                     <div>
                       <p className="text-sm font-medium text-gray-900">{chat.customer}</p>
                       <div className="flex items-center space-x-2">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(chat.status)}`}>
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(chat.status)}`}>
                           {chat.status}
                         </span>
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(chat.type)}`}>
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getTypeColor(chat.type)}`}>
                           {chat.type}
                         </span>
                       </div>
