@@ -12,12 +12,6 @@ A modern order processing and inventory management system built with Next.js, Ty
 - 🤖 **AI Chatbot** - Customer support assistant
 - 💾 **MongoDB Integration** - Robust data storage and management
 
-## Database Configuration
-
-This project is configured to work with the following MongoDB setup:
-- **MongoDB URI**: `mongodb+srv://kumarshresth2004:Shresth%40123@cluster0.lly1dz4.mongodb.net/`
-- **Database Name**: `store_db`
-
 ## Quick Start
 
 ### 1. Installation
@@ -44,6 +38,7 @@ npm run seed
 ```
 
 This will create:
+
 - 3 sample customers
 - 5 sample products (including some with low stock)
 - 3 sample orders with different statuses
@@ -96,17 +91,20 @@ src/
 ## Database Models
 
 ### Customer
+
 - Personal information (name, email, phone)
 - Address details
 - Order history
 - Total spending
 
 ### Product
+
 - Product details (name, description, price)
 - Inventory tracking (quantity, low stock alerts)
 - SKU and category management
 
 ### Order
+
 - Order items and quantities
 - Customer information
 - Payment and shipping details
@@ -115,24 +113,28 @@ src/
 ## Features in Detail
 
 ### Dashboard
+
 - Real-time statistics (orders, customers, revenue)
 - Recent orders display
 - Low stock alerts
 - Quick action buttons
 
 ### Inventory Management
+
 - Product catalog
 - Stock level monitoring
 - Low stock alerts
 - SKU management
 
 ### Order Processing
+
 - Create new orders
 - Automatic inventory updates
 - Tax calculation (18% GST)
 - Multiple payment methods
 
 ### Customer Management
+
 - Customer profiles
 - Order history
 - Contact information
