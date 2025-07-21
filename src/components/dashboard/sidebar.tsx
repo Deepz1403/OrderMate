@@ -87,6 +87,23 @@ export function Sidebar() {
     return pathname?.startsWith(href);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        window.location.href = '/auth/login';
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <aside className="fixed left-0 top-0 z-10 flex h-screen w-64 flex-col overflow-y-auto bg-white p-4 shadow-lg border-r border-gray-200">
       {/* Header */}
@@ -194,7 +211,10 @@ export function Sidebar() {
             </p>
           </div>
         </div>
-        <button className="flex items-center gap-3 p-3 rounded-lg transition-colors border-b border-gray-100 hover:bg-gray-50 w-full text-sm font-medium text-gray-700 hover:text-gray-900">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 p-3 rounded-lg transition-colors border-b border-gray-100 hover:bg-gray-50 w-full text-sm font-medium text-gray-700 hover:text-gray-900"
+        >
           <LogOut className="h-5 w-5 text-gray-500" />
           Logout
         </button>

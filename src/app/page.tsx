@@ -34,10 +34,10 @@ export default function LandingPage() {
             
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild>
-                <Link href="/login">Sign in</Link>
+                <Link href="/auth/login">Sign in</Link>
               </Button>
               <Button className="bg-black hover:bg-gray-800 text-white" asChild>
-                <Link href="/dashboard">Get started</Link>
+                <Link href="/auth/login">Get started</Link>
               </Button>
             </div>
           </div>
@@ -64,9 +64,11 @@ export default function LandingPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-                  Start free trial
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg" asChild>
+                  <Link href="/auth/signup">
+                    Start free trial
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="px-8 py-4 text-lg">
                   <Play className="w-5 h-5 mr-2" />
@@ -365,12 +367,14 @@ export default function LandingPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-              Start free trial
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg" asChild>
+              <Link href="/auth/signup">
+                Start free trial
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800 px-8 py-4 text-lg">
-              Talk to sales
+            <Button size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800 px-8 py-4 text-lg" asChild>
+              <Link href="/auth/login">Talk to sales</Link>
             </Button>
           </div>
           
